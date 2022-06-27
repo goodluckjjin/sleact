@@ -74,7 +74,7 @@ const config: webpack.Configuration = {
   },
   devServer: {
     // WebpackDevServer.Configuration
-    historyApiFallback: true,
+    historyApiFallback: true, // react-router
     port: 3090,
     devMiddleware: { publicPath: "/dist/" },
     static: { directory: path.resolve(__dirname) },
