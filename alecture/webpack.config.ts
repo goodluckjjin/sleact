@@ -54,7 +54,7 @@ const config: webpack.Configuration = {
               ],
             },
             production: {
-              plugins: ["@emtion"],
+              plugins: ["@emotion"],
             },
           },
         },
