@@ -45,7 +45,16 @@ const config: webpack.Configuration = {
           // 아래 env는 hotload 추가시 필요
           env: {
             development: {
-              plugins: [require.resolve("react-refresh/babel")],
+              plugins: [
+                "@emotion",
+                {
+                  sourceMap: true,
+                },
+                require.resolve("react-refresh/babel"),
+              ],
+            },
+            production: {
+              plugins: ["@emtion"],
             },
           },
         },
