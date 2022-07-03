@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from "./styles";
 import useInput from "@hooks/useInput";
 
@@ -23,6 +25,19 @@ const SignUp = () => {
     (e: any) => {
       e.preventDefault();
       console.log(email, nickname, password, passwordCheck);
+      axios
+        .post(`http://localhost:3095/api/users`, {
+          email,
+          nickname,
+          password,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          error.response;
+        })
+        .finally(() => {});
     },
     [email, nickname, password, passwordCheck],
   );
