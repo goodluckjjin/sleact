@@ -30,6 +30,7 @@ const SignUp = () => {
       setSignUpError(""); // 비동기 전 초기화시키기
       setSignUpSuccess(false); // 전에 요청보냈던 결과로부터 영향 안 받기 위함
       axios
+        // .post(`/api/users`, {
         .post(`http://localhost:3095/api/users`, {
           email,
           nickname,
