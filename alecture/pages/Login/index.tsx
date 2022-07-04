@@ -1,11 +1,16 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import useSWR, { Key } from "swr";
+import fetcher from "@utils/fetcher";
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from "./styles";
 import useInput from "@hooks/useInput";
 
 const LogIn = () => {
+  const address = "http://localhost:3095/api/users";
+  const { data, error, mutate } = useSWR(address, fetcher);
+  // login후
+  //data는 fetcher의 반환값
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
   const [logInError, , setLogInError] = useInput(false);
@@ -15,11 +20,16 @@ const LogIn = () => {
       e.preventDefault();
       setLogInError(true);
       axios
-        .post(`http://localhost:3095/api/users`, {
-          email,
-          password,
-        })
+        .post(
+          `http://localhost:3095/api/users`,
+          {
+            email,
+            password,
+          },
+          { withCredentials: true },
+        )
         .then((response) => {
+          mutate();
           console.log(response);
         })
         .catch((error) => {
