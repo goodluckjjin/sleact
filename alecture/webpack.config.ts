@@ -88,10 +88,15 @@ const config: webpack.Configuration = {
     devMiddleware: { publicPath: "/dist/" },
     static: { directory: path.resolve(__dirname) },
     // proxy: {
-    //   '/api/': {
-    //     target: 'http://localhost:3095',
+    //   "/api/": {
+    //     // api로 시작하는 경로일 경우
+    //     target: "http://localhost:3095", // 요청 url 앞에 target 붙여주기, ex) https://localhost:3095/api/users
     //     changeOrigin: true,
+    //     secure: false,
     //     ws: true,
+    //     // headers: {
+    //     //   Connection: "keep-alive",
+    //     // },
     //   },
     // },
   },

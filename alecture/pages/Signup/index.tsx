@@ -11,6 +11,8 @@ const SignUp = () => {
   const [password, onChangePassword, setPassword] = useInput("");
   const [passwordCheck, , setPasswordCheck] = useInput("");
   const [missMatchError, , setMissMatchError] = useInput(false);
+  const [signUpSuccess, , setSignUpSuccess] = useInput(false);
+  const [signUpError, , setSignUpError] = useInput("");
 
   const onChangePasswordCheck = useCallback(
     (e: any) => {
@@ -25,6 +27,8 @@ const SignUp = () => {
     (e: any) => {
       e.preventDefault();
       console.log(email, nickname, password, passwordCheck);
+      setSignUpError(""); // 비동기 전 초기화시키기
+      setSignUpSuccess(false); // 전에 요청보냈던 결과로부터 영향 안 받기 위함
       axios
         .post(`http://localhost:3095/api/users`, {
           email,
@@ -33,9 +37,11 @@ const SignUp = () => {
         })
         .then((response) => {
           console.log(response);
+          setSignUpSuccess(true);
         })
         .catch((error) => {
-          error.response;
+          setSignUpError(error.response.data);
+          console.log(error.response.data);
         })
         .finally(() => {});
     },
@@ -77,8 +83,8 @@ const SignUp = () => {
           </div>
           {missMatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
           {!nickname && <Error>닉네임을 입력해주세요.</Error>}
-          {/* {signUpError && <Error>{signUpError}</Error>}
-          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>} */}
+          {signUpError && <Error>{signUpError}</Error>}
+          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
