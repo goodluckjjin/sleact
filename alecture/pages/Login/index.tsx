@@ -29,7 +29,7 @@ const LogIn = () => {
           { withCredentials: true },
         )
         .then((response) => {
-          mutate();
+          // mutate();
           console.log(response);
         })
         .catch((error) => {
