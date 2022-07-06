@@ -87,6 +87,7 @@ const config: webpack.Configuration = {
     port: 3090,
     devMiddleware: { publicPath: "/dist/" },
     static: { directory: path.resolve(__dirname) },
+    hot: true,
     // proxy: {
     //   "/api/": {
     //     // api로 시작하는 경로일 경우

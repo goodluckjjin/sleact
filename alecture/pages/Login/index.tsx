@@ -1,14 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import useSWR, { Key } from "swr";
+import useSWR from "swr";
 import fetcher from "@utils/fetcher";
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from "./styles";
 import useInput from "@hooks/useInput";
 
 const LogIn = () => {
-  const address = "http://localhost:3095/api/users";
-  const { data, error, mutate } = useSWR(address, fetcher);
+  const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher);
   // login후
   //data는 fetcher의 반환값
   const [email, onChangeEmail] = useInput("");
@@ -29,7 +28,7 @@ const LogIn = () => {
           { withCredentials: true },
         )
         .then((response) => {
-          // mutate();
+          mutate();
           console.log(response);
         })
         .catch((error) => {
@@ -37,7 +36,7 @@ const LogIn = () => {
           console.log(error.response.data);
         });
     },
-    [email, password],
+    [email, password, mutate],
   );
 
   return (
