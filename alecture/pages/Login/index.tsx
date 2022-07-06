@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 import useSWR from "swr";
 import fetcher from "@utils/fetcher";
@@ -40,6 +40,9 @@ const LogIn = () => {
     },
     [email, password, mutate],
   );
+  if (data) {
+    return <Redirect to={"/workspace/channel"} />;
+  }
 
   return (
     <div id="container">
