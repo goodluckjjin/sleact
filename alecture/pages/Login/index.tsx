@@ -7,7 +7,9 @@ import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } fro
 import useInput from "@hooks/useInput";
 
 const LogIn = () => {
-  const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher);
+  const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
+    dedupingInterval: 10000, // 호출시간
+  });
   // login후
   //data는 fetcher의 반환값
   const [email, onChangeEmail] = useInput("");
