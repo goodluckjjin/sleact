@@ -44,7 +44,8 @@ const LogIn = () => {
     [email, password, mutate],
   );
   if (data) {
-    return <Navigate to={"/workspace/channel"} />;
+    console.log("로그인 서어공");
+    return <Navigate to={"/workspace"} />;
   }
 
   return (
