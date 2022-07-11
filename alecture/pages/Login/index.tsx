@@ -8,8 +8,10 @@ import useInput from "@hooks/useInput";
 
 const LogIn = () => {
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
-    dedupingInterval: 10000, // 호출시간
+    dedupingInterval: 10000, // 캐시 유지 기간, 10초 뒤에 서버에 요청보냄
   });
+  console.log("in LogIn ", data, error);
+
   // login후
   //data는 fetcher의 반환값
   const [email, onChangeEmail] = useInput("");
@@ -22,7 +24,7 @@ const LogIn = () => {
       setLogInError(true);
       axios
         .post(
-          `http://localhost:3095/api/users`,
+          `http://localhost:3095/api/users/login`,
           {
             email,
             password,
@@ -30,12 +32,13 @@ const LogIn = () => {
           { withCredentials: true },
         )
         .then((response) => {
-          mutate();
-          console.log(response);
+          // mutate();
+          mutate(response.data, false); //
+          console.log("login then", response);
         })
         .catch((error) => {
-          setLogInError(error.response?.data?.statusCode === 401);
-          console.log(error.response.data);
+          setLogInError(error.response?.data?.staㄴtusCode === 401);
+          console.log("login error", error.response.data); // 이미 사용 중인 에러입니다
         });
     },
     [email, password, mutate],
