@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useCallback, FC } from "react";
+import React, { useCallback, FC, useState } from "react";
 import useSWR from "swr";
 import fetcher from "@utils/fetcher";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import {
   Header,
   ProfileImg,
   RightMenu,
+  ProfileModal,
   WorkspaceWrapper,
   Workspaces,
   MenuScroll,
@@ -15,6 +16,14 @@ import {
   WorkspaceName,
 } from "@layouts/Workspace/styles";
 import gravatar from "gravatar";
+import Menu from "@components/Menu";
+
+interface DataType {
+  id: Number;
+  email: String;
+  nickname: String;
+  workspaces: [];
+}
 
 const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
@@ -29,6 +38,11 @@ const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
   }, []);
 
   console.log("data ============", data);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const onClickUSerProfile = useCallback(() => {
+    setShowUserMenu((prev) => !prev);
+  }, []);
 
   if (data === undefined) {
     return <div>로딩중...</div>;
@@ -41,11 +55,18 @@ const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
     <div>
       <Header>
         <RightMenu>
-          <span>
+          <span onClick={onClickUSerProfile}>
             <ProfileImg
             // src={gravatar?.url(data.nickname, { s: "28px", d: "retro" })}
             //  alt={`${data.nickname}`}
             />
+            {showUserMenu && (
+              <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUSerProfile}>
+                <ProfileModal>
+                  <img src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} />
+                </ProfileModal>
+              </Menu>
+            )}
           </span>
         </RightMenu>
       </Header>

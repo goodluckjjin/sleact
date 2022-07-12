@@ -18,6 +18,7 @@
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"],
       "@typings/*": ["typings/*"]
-    }
+    },
+    "useUnknownInCatchVariables": false
   }
 }
