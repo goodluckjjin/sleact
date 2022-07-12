@@ -45,7 +45,7 @@ const LogIn = () => {
   );
   if (data) {
     console.log("로그인 서어공");
-    return <Navigate to={"/workspace"} />;
+    return <Navigate to={"/workspace/channel"} />;
   }
 
   return (

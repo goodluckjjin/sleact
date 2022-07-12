@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useCallback, FC } from "react";
 import useSWR from "swr";
 import fetcher from "@utils/fetcher";
-import { Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import {
   Header,
   ProfileImg,
@@ -15,10 +15,6 @@ import {
   WorkspaceName,
 } from "@layouts/Workspace/styles";
 import gravatar from "gravatar";
-import loadable from "@loadable/component";
-
-const Channel = loadable(() => import("@pages/Channel"));
-const DirectMessage = loadable(() => import("@pages/DirectMessage"));
 
 const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
@@ -61,15 +57,7 @@ const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
           <WorkspaceName>Sleact</WorkspaceName>
           MenuScroll
         </Channels>
-        <Chats>
-          {/* <Router> */}
-          <Routes>
-            <span>hihi</span>
-            <Route path="/workspace/channel" element={<Channel />} />
-            <Route path="/workspace/dm" element={<DirectMessage />} />
-          </Routes>
-          {/* </Router> */}
-        </Chats>
+        <Chats></Chats>
       </WorkspaceWrapper>
     </div>
   );
