@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Fetcher } from "swr";
 
 const fetcher: Fetcher = (url: string) =>
@@ -6,5 +6,14 @@ const fetcher: Fetcher = (url: string) =>
     ?.get(url, {
       withCredentials: true,
     })
-    .then((response) => response?.data);
+    .then((response) => response?.data)
+    .catch((error) => {
+      console.log(error);
+
+      return error.response.data;
+    });
+// .catch (error) {
+//   const err = error as AxiosError;
+//   console.log(err.response?.data);
+// }
 export default fetcher;

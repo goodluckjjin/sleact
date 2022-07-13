@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useCallback, FC, useState } from "react";
-import useSWR from "swr";
+import React, { VFC, useCallback, FC, useState } from "react";
+import useSWR, { BareFetcher, SWRHook } from "swr";
 import fetcher from "@utils/fetcher";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
 import {
@@ -10,22 +10,18 @@ import {
   ProfileModal,
   WorkspaceWrapper,
   Workspaces,
+  WorkspaceButton,
   MenuScroll,
   Chats,
   Channels,
   WorkspaceName,
+  AddButton,
 } from "@layouts/Workspace/styles";
 import gravatar from "gravatar";
 import Menu from "@components/Menu";
+import { IUser, IWorkspace } from "@typings/db";
 
-interface DataType {
-  id: Number;
-  email: String;
-  nickname: String;
-  workspaces: [];
-}
-
-const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
+const Workspace: FC = () => {
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
     dedupingInterval: 1000, // 호출시간
   });
@@ -37,20 +33,22 @@ const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
       .then(() => mutate(false));
   }, []);
 
-  console.log("data ============", data);
   const [showUserMenu, setShowUserMenu] = useState(false);
-
+  const userData = data as IUser;
+  const workspaces: IWorkspace[] = userData?.Workspaces;
   const onClickUSerProfile = useCallback(() => {
     setShowUserMenu((prev) => !prev);
   }, []);
+  const onClickCreateWorkspace = useCallback(() => {}, []);
 
-  if (data === undefined) {
+  if (userData === undefined) {
     return <div>로딩중...</div>;
   }
 
-  if (!data) {
+  if (!userData) {
     return <Navigate to="/login" />;
   }
+
   return (
     <div>
       <Header>
@@ -63,7 +61,9 @@ const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
             {showUserMenu && (
               <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUSerProfile}>
                 <ProfileModal>
-                  <img src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} />
+                  {/* <img
+                   src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} 
+                   /> */}
                 </ProfileModal>
               </Menu>
             )}
@@ -72,7 +72,16 @@ const Workspace: FC<React.PropsWithChildren<{}>> = ({ children }) => {
       </Header>
       <button onClick={onLogout}>로그아웃</button>
       <WorkspaceWrapper>
-        <Workspaces>text</Workspaces>
+        <Workspaces>
+          {workspaces.map((ws: IWorkspace) => {
+            return (
+              <Link key={ws.id} to={`/workspaces/${123}/channael/일반`}>
+                <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
+              </Link>
+            );
+          })}
+          <AddButton onClick={onClickCreateWorkspace}></AddButton>
+        </Workspaces>
         <MenuScroll></MenuScroll>
         <Channels>
           <WorkspaceName>Sleact</WorkspaceName>
