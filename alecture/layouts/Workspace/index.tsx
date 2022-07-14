@@ -17,8 +17,12 @@ import {
   WorkspaceName,
   AddButton,
 } from "@layouts/Workspace/styles";
+import { Button, Input, Label } from "@pages/Signup/styles";
+import useInput from "@hooks/useInput";
 import gravatar from "gravatar";
 import Menu from "@components/Menu";
+import Modal from "@components/Modal";
+
 import { IUser, IWorkspace } from "@typings/db";
 
 const Workspace: FC = () => {
@@ -34,12 +38,32 @@ const Workspace: FC = () => {
   }, []);
 
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
+  const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
+
   const userData = data as IUser;
   const workspaces: IWorkspace[] = userData?.Workspaces;
+
   const onClickUSerProfile = useCallback(() => {
     setShowUserMenu((prev) => !prev);
+    console.log("hi");
   }, []);
-  const onClickCreateWorkspace = useCallback(() => {}, []);
+
+  const onCloseUserProfile = useCallback((e: any) => {
+    e.stopPropagation();
+    setShowUserMenu(false);
+  }, []);
+
+  const onClickCreateWorkspace = useCallback(() => {
+    setShowCreateWorkspaceModal(true);
+  }, []);
+
+  const onCreateWorkspace = useCallback(() => {}, []);
+
+  const onCloseModal = useCallback(() => {
+    setShowCreateWorkspaceModal(false);
+  }, []);
 
   if (userData === undefined) {
     return <div>로딩중...</div>;
@@ -59,7 +83,7 @@ const Workspace: FC = () => {
             //  alt={`${data.nickname}`}
             />
             {showUserMenu && (
-              <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUSerProfile}>
+              <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onCloseUserProfile}>
                 <ProfileModal>
                   {/* <img
                    src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} 
@@ -80,7 +104,7 @@ const Workspace: FC = () => {
               </Link>
             );
           })}
-          <AddButton onClick={onClickCreateWorkspace}></AddButton>
+          <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <MenuScroll></MenuScroll>
         <Channels>
@@ -89,6 +113,19 @@ const Workspace: FC = () => {
         </Channels>
         <Chats></Chats>
       </WorkspaceWrapper>
+      <Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
+        <form onSubmit={onClickCreateWorkspace}>
+          <Label id="workspace-label">
+            <span>워크스페이스 이름</span>
+            <Input id="workspace" value={newWorkspace} onChange={onChangeNewWorkspace} />
+          </Label>
+          <Label id="workspace-url-label">
+            <span>워크스페이스 url</span>
+            <Input id="workspace" value={newUrl} onChange={onChangeNewUrl} />
+          </Label>
+          <Button type="submit">생성하기</Button>
+        </form>
+      </Modal>
     </div>
   );
 };
