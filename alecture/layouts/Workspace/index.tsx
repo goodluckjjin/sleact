@@ -15,6 +15,7 @@ import {
   Chats,
   Channels,
   WorkspaceName,
+  WorkspaceModal,
   AddButton,
 } from "@layouts/Workspace/styles";
 import { Button, Input, Label } from "@pages/Signup/styles";
@@ -23,6 +24,7 @@ import gravatar from "gravatar";
 import { toast } from "react-toastify";
 import Menu from "@components/Menu";
 import Modal from "@components/Modal";
+import CreateChannelModal from "@components/CreateChannelModal";
 
 import { IUser, IWorkspace } from "@typings/db";
 
@@ -42,11 +44,13 @@ const Workspace: FC = () => {
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
+  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
+  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
 
   const userData = data as IUser;
   const workspaces: IWorkspace[] = userData?.Workspaces;
 
-  const onClickUSerProfile = useCallback(() => {
+  const onClickUserProfile = useCallback(() => {
     setShowUserMenu((prev) => !prev);
     console.log("hi");
   }, []);
@@ -89,6 +93,16 @@ const Workspace: FC = () => {
 
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
+    setShowCreateChannelModal(false);
+  }, []);
+
+  const toggleWorkspaceModal = useCallback(() => {
+    setShowWorkspaceModal((prev) => !prev);
+  }, []);
+
+  // 채널 만들기
+  const onClickCreateChannel = useCallback(() => {
+    setShowCreateChannelModal(true);
   }, []);
 
   if (userData === undefined) {
@@ -103,7 +117,7 @@ const Workspace: FC = () => {
     <div>
       <Header>
         <RightMenu>
-          <span onClick={onClickUSerProfile}>
+          <span onClick={onClickUserProfile}>
             <ProfileImg
             // src={gravatar?.url(data.nickname, { s: "28px", d: "retro" })}
             //  alt={`${data.nickname}`}
@@ -132,10 +146,17 @@ const Workspace: FC = () => {
           })}
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
-        <MenuScroll></MenuScroll>
         <Channels>
-          <WorkspaceName>Sleact</WorkspaceName>
-          MenuScroll
+          <WorkspaceName onClick={toggleWorkspaceModal}>Sleact</WorkspaceName>
+          <MenuScroll>
+            <Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
+              <WorkspaceModal>
+                <h2>Sleact</h2>
+                <button onClick={onClickCreateChannel}>채널 만들기</button>
+                <button onClick={onLogout}>로그아웃</button>
+              </WorkspaceModal>
+            </Menu>
+          </MenuScroll>
         </Channels>
         <Chats></Chats>
       </WorkspaceWrapper>
@@ -152,6 +173,11 @@ const Workspace: FC = () => {
           <Button type="submit">생성하기</Button>
         </form>
       </Modal>
+      <CreateChannelModal
+        show={showCreateChannelModal}
+        onCloseModal={onCloseModal}
+        setShowCreateChannelModal={setShowCreateChannelModal}
+      ></CreateChannelModal>
     </div>
   );
 };
