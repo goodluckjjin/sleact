@@ -20,6 +20,7 @@ import {
 import { Button, Input, Label } from "@pages/Signup/styles";
 import useInput from "@hooks/useInput";
 import gravatar from "gravatar";
+import { toast } from "react-toastify";
 import Menu from "@components/Menu";
 import Modal from "@components/Modal";
 
@@ -59,7 +60,32 @@ const Workspace: FC = () => {
     setShowCreateWorkspaceModal(true);
   }, []);
 
-  const onCreateWorkspace = useCallback(() => {}, []);
+  const onCreateWorkspace = useCallback(
+    (e: any) => {
+      e.preventDefault(); // 새로고침 안되게
+      if (!newWorkspace || !newWorkspace.trim()) return;
+      if (!newUrl || !newUrl.trim()) return;
+      axios
+        .post(
+          "http://localhost:3095/api/workspaces",
+          { workspace: newWorkspace, url: newUrl },
+          {
+            withCredentials: true,
+          },
+        )
+        .then(() => {
+          mutate();
+          setShowCreateWorkspaceModal(false);
+          setNewWorkspace("");
+          setNewUrl("");
+        })
+        .catch((error: any) => {
+          console.dir(error);
+          toast.error(error.response?.data, { position: "bottom-center" });
+        });
+    },
+    [newWorkspace, newUrl],
+  );
 
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
@@ -114,7 +140,7 @@ const Workspace: FC = () => {
         <Chats></Chats>
       </WorkspaceWrapper>
       <Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
-        <form onSubmit={onClickCreateWorkspace}>
+        <form onSubmit={onCreateWorkspace}>
           <Label id="workspace-label">
             <span>워크스페이스 이름</span>
             <Input id="workspace" value={newWorkspace} onChange={onChangeNewWorkspace} />

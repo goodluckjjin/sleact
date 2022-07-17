@@ -7,7 +7,6 @@ export const CreateMenu = styled.div`
   left: 0;
   bottom: 0;
   z-index: 1000;
-  background-color: red;
 
   & > div {
     position: absolute;
