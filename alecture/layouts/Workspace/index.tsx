@@ -26,12 +26,34 @@ import Menu from "@components/Menu";
 import Modal from "@components/Modal";
 import CreateChannelModal from "@components/CreateChannelModal";
 
-import { IUser, IWorkspace } from "@typings/db";
+import { IChannel, IUser, IWorkspace } from "@typings/db";
+import { useParams } from "react-router";
+import loadable from "@loadable/component";
+
+const Channel = loadable(() => import("@pages/Channel"));
+const DirectMessage = loadable(() => import("@pages/DirectMessage"));
 
 const Workspace: FC = () => {
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
+  const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
+  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
+  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
+  const { workspace } = useParams<{ workspace: string }>();
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
     dedupingInterval: 1000, // 호출시간
   });
+  const userData = data as IUser;
+  const workspaces: IWorkspace[] = userData?.Workspaces;
+  console.log("workspace", workspace);
+  const { data: data2 } = useSWR(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
+    fetcher,
+  );
+  const channelData = data2 as IChannel;
+  console.log("channelData", channelData);
+
   const onLogout = useCallback(() => {
     axios
       .post("http://localhost:3095/api/users/logout", null, {
@@ -39,16 +61,6 @@ const Workspace: FC = () => {
       })
       .then(() => mutate(false));
   }, []);
-
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
-  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput("");
-  const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
-  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
-  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
-
-  const userData = data as IUser;
-  const workspaces: IWorkspace[] = userData?.Workspaces;
 
   const onClickUserProfile = useCallback(() => {
     setShowUserMenu((prev) => !prev);
@@ -105,6 +117,9 @@ const Workspace: FC = () => {
     setShowCreateChannelModal(true);
   }, []);
 
+  {
+  }
+
   if (userData === undefined) {
     return <div>로딩중...</div>;
   }
@@ -156,9 +171,17 @@ const Workspace: FC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            {/* {channelData?.map((v :) => {
+              return <div>{v.name}</div>;
+            })} */}
           </MenuScroll>
         </Channels>
-        <Chats></Chats>
+        <Chats>
+          <Routes>
+            <Route path="/workspace/:workspace/channel/:channel" element={<Channel />} />
+            <Route path="/workspace/:workspace/dm/:id" element={<DirectMessage />} />
+          </Routes>
+        </Chats>
       </WorkspaceWrapper>
       <Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
         <form onSubmit={onCreateWorkspace}>
