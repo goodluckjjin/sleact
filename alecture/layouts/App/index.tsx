@@ -14,9 +14,10 @@ const App = () => {
       <Route path="/" element={<Navigate replace to="login" />} />
       <Route path="/login" element={<LogIn />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/workspace" element={<Workspace />} />
-      <Route path="/workspace/channel" element={<Channel />} />
-      <Route path="/workspace/dm" element={<DirectMessage />} />
+      <Route path="/workspace/:workspace" element={<Workspace />} />
+      <Route path="/workspace/:workspace/channel/:channel" element={<Channel />} />
+      <Route path="/workspace/:workspace/dm/:id" element={<DirectMessage />} />
+      {/* :workspace 는 parameter */}
     </Routes>
   );
 };
