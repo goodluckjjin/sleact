@@ -51,7 +51,7 @@ const Workspace: FC = () => {
     userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
     fetcher,
   );
-  const channelData = data2 as IChannel;
+  const channelData = data2 as IChannel[];
   console.log("channelData", channelData);
 
   const onLogout = useCallback(() => {
@@ -171,9 +171,9 @@ const Workspace: FC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
-            {/* {channelData?.map((v :) => {
+            {channelData?.map((v: any) => {
               return <div>{v.name}</div>;
-            })} */}
+            })}
           </MenuScroll>
         </Channels>
         <Chats>
