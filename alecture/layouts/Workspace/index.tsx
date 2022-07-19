@@ -106,6 +106,7 @@ const Workspace: FC = () => {
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
+    setShowWorkspaceModal(false);
   }, []);
 
   const toggleWorkspaceModal = useCallback(() => {
