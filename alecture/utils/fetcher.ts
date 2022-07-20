@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { Fetcher } from "swr";
 
-const fetcher: Fetcher = (url: string) =>
+const fetcher = (url: string) =>
   axios
     ?.get(url, {
       withCredentials: true,

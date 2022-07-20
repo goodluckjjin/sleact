@@ -29,6 +29,8 @@ import CreateChannelModal from "@components/CreateChannelModal";
 import { IChannel, IUser, IWorkspace } from "@typings/db";
 import { useParams } from "react-router";
 import loadable from "@loadable/component";
+import InviteWorkspaceModal from "@components/InviteWorkspaceModal";
+import InviteChannelModal from "@components/InviteChannelModal";
 
 const Channel = loadable(() => import("@pages/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage"));
@@ -40,6 +42,9 @@ const Workspace: FC = () => {
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
+  const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
+  const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
+
   const { workspace } = useParams<{ workspace: string }>();
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher, {
     dedupingInterval: 1000, // 호출시간
@@ -107,6 +112,8 @@ const Workspace: FC = () => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
     setShowWorkspaceModal(false);
+    setShowInviteWorkspaceModal(false);
+    setShowInviteChannelModal(false);
   }, []);
 
   const toggleWorkspaceModal = useCallback(() => {
@@ -201,7 +208,17 @@ const Workspace: FC = () => {
         show={showCreateChannelModal}
         onCloseModal={onCloseModal}
         setShowCreateChannelModal={setShowCreateChannelModal}
-      ></CreateChannelModal>
+      />
+      <InviteWorkspaceModal
+        show={showInviteWorkspaceModal}
+        onCloseModal={onCloseModal}
+        setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
+      />
+      <InviteChannelModal
+        show={showInviteChannelModal}
+        onCloseModal={onCloseModal}
+        setShowInviteChannelModal={setShowInviteChannelModal}
+      />
     </div>
   );
 };
