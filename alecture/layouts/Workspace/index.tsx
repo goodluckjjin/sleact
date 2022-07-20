@@ -31,6 +31,8 @@ import { useParams } from "react-router";
 import loadable from "@loadable/component";
 import InviteWorkspaceModal from "@components/InviteWorkspaceModal";
 import InviteChannelModal from "@components/InviteChannelModal";
+import ChannelList from "@components/ChannelList";
+import DMList from "@components/DMList";
 
 const Channel = loadable(() => import("@pages/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage"));
@@ -57,7 +59,12 @@ const Workspace: FC = () => {
     fetcher,
   );
   const channelData = data2 as IChannel[];
-  console.log("channelData", channelData);
+
+  const { data: data3 } = useSWR(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
+    fetcher,
+  );
+  console.log("member", data3);
 
   const onLogout = useCallback(() => {
     axios
@@ -125,8 +132,9 @@ const Workspace: FC = () => {
     setShowCreateChannelModal(true);
   }, []);
 
-  {
-  }
+  const onClickInviteWorkspace = useCallback(() => {
+    setShowInviteWorkspaceModal(true);
+  }, []);
 
   if (userData === undefined) {
     return <div>로딩중...</div>;
@@ -175,10 +183,13 @@ const Workspace: FC = () => {
             <Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
               <WorkspaceModal>
                 <h2>Sleact</h2>
+                <button onClick={onClickInviteWorkspace}>워크스페이스에 사용자 초대</button>
                 <button onClick={onClickCreateChannel}>채널 만들기</button>
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            <ChannelList />
+            <DMList />
             {channelData?.map((v: any) => {
               return <div>{v.name}</div>;
             })}
