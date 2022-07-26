@@ -15,7 +15,7 @@ const ChannelList: FC = () => {
     data: userData,
     error,
     mutate,
-  } = useSWR<IUser>("/api/users", fetcher, {
+  } = useSWR<IUser>("http://localhost:3095/api/users", fetcher, {
     dedupingInterval: 2000, // 2초
   });
   const { data: channelData } = useSWR<IChannel[]>(
@@ -41,8 +41,8 @@ const ChannelList: FC = () => {
         <span>Channels</span>
       </h2>
       <div>
-        {/* {!channelCollapse &&
-          channelData?.map((channel:IChannel) => {
+        {!channelCollapse &&
+          channelData?.map((channel: IChannel) => {
             return (
               <NavLink
                 key={channel.name}
@@ -52,7 +52,7 @@ const ChannelList: FC = () => {
                 <span># {channel.name}</span>
               </NavLink>
             );
-          })} */}
+          })}
       </div>
     </>
   );

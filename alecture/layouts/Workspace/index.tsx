@@ -149,16 +149,11 @@ const Workspace: FC = () => {
       <Header>
         <RightMenu>
           <span onClick={onClickUserProfile}>
-            <ProfileImg
-            // src={gravatar?.url(data.nickname, { s: "28px", d: "retro" })}
-            //  alt={`${data.nickname}`}
-            />
+            <ProfileImg src={gravatar?.url(data.nickname, { s: "28px", d: "retro" })} alt={`${data.nickname}`} />
             {showUserMenu && (
               <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onCloseUserProfile}>
                 <ProfileModal>
-                  {/* <img
-                   src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} 
-                   /> */}
+                  <img src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} />
                 </ProfileModal>
               </Menu>
             )}
@@ -188,17 +183,17 @@ const Workspace: FC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            {/* {channelData?.map((v: any) => {
+              return <div>{v.name}</div>;
+            })} */}
             <ChannelList />
             <DMList />
-            {channelData?.map((v: any) => {
-              return <div>{v.name}</div>;
-            })}
           </MenuScroll>
         </Channels>
         <Chats>
           <Routes>
-            <Route path="/workspace/:workspace/channel/:channel" element={<Channel />} />
-            <Route path="/workspace/:workspace/dm/:id" element={<DirectMessage />} />
+            <Route path="/channel/:channel" element={<Channel />} />
+            <Route path="/dm/:id" element={<DirectMessage />} />
           </Routes>
         </Chats>
       </WorkspaceWrapper>
