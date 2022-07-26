@@ -17,14 +17,17 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
     }
   }, []);
 
-  const onKeyDownChat = useCallback((e: any) => {
-    console.log(e);
-    if (e.key === "Enter") {
-      if (!e.shiftKey) {
-        onSubmitForm(e);
+  const onKeyDownChat = useCallback(
+    (e: any) => {
+      console.log(e);
+      if (e.key === "Enter") {
+        if (!e.shiftKey) {
+          onSubmitForm(e);
+        }
       }
-    }
-  }, []);
+    },
+    [onSubmitForm],
+  );
 
   return (
     <ChatArea>
