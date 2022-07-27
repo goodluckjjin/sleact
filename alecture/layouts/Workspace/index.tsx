@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { VFC, useCallback, FC, useState } from "react";
+import React, { VFC, useCallback, FC, useState, useEffect } from "react";
 import useSWR, { BareFetcher, SWRHook } from "swr";
 import fetcher from "@utils/fetcher";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
@@ -33,6 +33,7 @@ import InviteWorkspaceModal from "@components/InviteWorkspaceModal";
 import InviteChannelModal from "@components/InviteChannelModal";
 import ChannelList from "@components/ChannelList";
 import DMList from "@components/DMList";
+import useSocket from "@hooks/useSocket";
 
 const Channel = loadable(() => import("@pages/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage"));
@@ -64,7 +65,12 @@ const Workspace: FC = () => {
     userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
     fetcher,
   );
-  console.log("member", data3);
+  const [socket, disconnect] = useSocket();
+  // useEffect(() => {
+  //   socket.on("message");
+  //   socket.emit();
+  //   disconnect();
+  // }, []);
 
   const onLogout = useCallback(() => {
     axios
