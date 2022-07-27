@@ -12,6 +12,7 @@ const useSocket = (workspace?: string) => {
   const disconnect = useCallback(() => {
     if (workspace) {
       sockets[workspace].disconnect();
+      delete sockets[workspace];
     }
   }, []);
   if (!workspace) return [undefined, disconnect];
