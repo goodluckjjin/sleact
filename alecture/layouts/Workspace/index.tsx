@@ -53,8 +53,8 @@ const Workspace: FC = () => {
     dedupingInterval: 1000, // 호출시간
   });
   const userData = data as IUser;
+
   const workspaces: IWorkspace[] = userData?.Workspaces;
-  console.log("workspace", workspace);
   const { data: data2 } = useSWR(
     userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
     fetcher,
@@ -179,8 +179,9 @@ const Workspace: FC = () => {
       <WorkspaceWrapper>
         <Workspaces>
           {workspaces.map((ws: IWorkspace) => {
+            console.log("ws", ws);
             return (
-              <Link key={ws.id} to={`/workspaces/${123}/channael/일반`}>
+              <Link key={ws.id} to={`/workspaces/${ws.url}/channel/일반`}>
                 <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
               </Link>
             );
