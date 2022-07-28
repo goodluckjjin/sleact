@@ -44,7 +44,7 @@ const DirectMessage = () => {
           .catch(console.error);
       }
     },
-    [chat, myData, userData, chatData],
+    [chat],
   );
 
   if (!userData || !myData) return null;
