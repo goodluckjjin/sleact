@@ -1,6 +1,4 @@
-// import useSocket from '@hooks/useSocket';
 // import { CollapseButton } from '@components/DMList/styles';
-// import useSocket from '@hooks/useSocket';
 import useSocket from "@hooks/useSocket";
 import { IUser, IUserWithOnline } from "@typings/db";
 import fetcher from "@utils/fetcher";
@@ -32,12 +30,12 @@ const DMList: FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log("DMList: workspace 바꼈다", workspace);
     setOnlineList([]);
   }, [workspace]);
 
   useEffect(() => {
     socket?.on("onlineList", (data: number[]) => {
+      console.log("DMList onlineList", data);
       setOnlineList(data);
     });
     // socket?.on('dm', onMessage);
@@ -65,8 +63,6 @@ const DMList: FC = () => {
         {!channelCollapse &&
           memberData?.map((member: IUserWithOnline) => {
             const isOnline = onlineList.includes(member.id);
-
-            console.log("onlineList", onlineList);
             return (
               <NavLink
                 key={member.id}

@@ -22,11 +22,18 @@ const ChannelList: FC = () => {
     userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
     fetcher,
   );
+  console.log("channelData", channelData);
   const [channelCollapse, setChannelCollapse] = useState(false);
 
   const toggleChannelCollapse = useCallback(() => {
     setChannelCollapse((prev) => !prev);
   }, []);
+
+  // channel active css start
+  const pathname = window.location.pathname;
+  const seperatedPathName = pathname.split("/");
+  const currentChannelName = decodeURI(seperatedPathName[seperatedPathName.length - 1]);
+  // channel active css end
 
   return (
     <>
@@ -43,10 +50,11 @@ const ChannelList: FC = () => {
       <div>
         {!channelCollapse &&
           channelData?.map((channel: IChannel) => {
+            const IsCurrentChannel = channel.name === currentChannelName;
             return (
               <NavLink
                 key={channel.name}
-                // activeClassName="selected"
+                className={IsCurrentChannel ? "selected" : ""}
                 to={`/workspace/${workspace}/channel/${channel.name}`}
               >
                 <span># {channel.name}</span>
