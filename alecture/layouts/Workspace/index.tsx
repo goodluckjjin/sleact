@@ -70,7 +70,7 @@ const Workspace: FC = () => {
   useEffect(() => {
     if (channelData && userData && socket) {
       console.log("socket", socket);
-      socket.emit("login", { id: userData.id, channels: channelData.map((v) => v.id) });
+      socket.emit("login", { id: userData.id, channels: channelData?.map((v) => v.id) });
     }
   }, [socket, userData, channelData]);
 
@@ -178,8 +178,7 @@ const Workspace: FC = () => {
       <button onClick={onLogout}>로그아웃</button>
       <WorkspaceWrapper>
         <Workspaces>
-          {workspaces.map((ws: IWorkspace) => {
-            console.log("ws", ws);
+          {workspaces?.map((ws: IWorkspace) => {
             return (
               <Link key={ws.id} to={`/workspaces/${ws.url}/channel/일반`}>
                 <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>

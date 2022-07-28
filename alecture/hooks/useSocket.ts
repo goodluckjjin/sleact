@@ -8,7 +8,7 @@ const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () =
   // js 스코프 개념을 필요
   // const disconnect = sockets[workspace].disconnect();
   // if(!workspace) return [undefined, disconnect];
-  console.log("render", workspace);
+  // console.log("render", workspace);
   const disconnect = useCallback(() => {
     if (workspace) {
       sockets[workspace].disconnect();
@@ -25,13 +25,13 @@ const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () =
     });
   }
   sockets[workspace].on("message", (data: any) => {
-    console.log(data);
+    // console.log(data);
   });
   sockets[workspace].on("data", (data: any) => {
-    console.log(data);
+    // console.log(data);
   });
   sockets[workspace].on("onlineList", (data: any) => {
-    console.log(data);
+    // console.log(data);
   });
 
   // console.log("sockets[workspace]", sockets[workspace]);

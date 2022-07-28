@@ -22,7 +22,6 @@ const ChannelList: FC = () => {
     userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
     fetcher,
   );
-  console.log("channelData", channelData);
   const [channelCollapse, setChannelCollapse] = useState(false);
 
   const toggleChannelCollapse = useCallback(() => {

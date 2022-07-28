@@ -1,10 +1,20 @@
-import React from "react";
+import React, { VFC } from "react";
 import { ChatZone, Section } from "@components/ChatList/styles";
+import { IDM } from "@typings/db";
+import Chat from "@components/Chat";
 
-const ChatList = () => {
+interface Props {
+  chatData?: IDM[];
+}
+
+// Channel, DM 함께 사용됨
+const ChatList: VFC<Props> = ({ chatData }: Props) => {
+  console.log("chatData", chatData);
   return (
     <ChatZone>
-      <Section>section</Section>
+      {chatData?.map((chat: IDM) => (
+        <Chat key={chat.id} data={chat} />
+      ))}
     </ChatZone>
   );
 };
