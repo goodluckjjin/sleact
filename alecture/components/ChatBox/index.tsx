@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { ChatArea, MentionsTextarea, Form, SendButton, Toolbox } from "@components/ChatBox/styles";
+import { ChatArea, MentionsTextarea, Form, SendButton, Toolbox, EachMention } from "@components/ChatBox/styles";
 import autosize from "autosize";
+import { Mention, SuggestionDataItem } from "react-mentions";
+import { useParams } from "react-router";
+import useSWR from "swr";
+import fetcher from "@utils/fetcher";
+import { IUser } from "@typings/db";
+import gravatar from "gravatar";
+
 interface Props {
   chat: string;
   onSubmitForm: (e: any) => void;
@@ -9,6 +16,20 @@ interface Props {
 }
 
 const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
+  const { workspace } = useParams<{ workspace: string }>();
+
+  const {
+    data: userData,
+    error,
+    mutate,
+  } = useSWR("http://localhost:3095/api/users", fetcher, {
+    dedupingInterval: 1000, // 호출시간
+  });
+  const { data: memberData } = useSWR(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
+    fetcher,
+  );
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -28,7 +49,30 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
     },
     [onSubmitForm],
   );
-
+  const renderSuggestion = useCallback(
+    (
+      suggestion: SuggestionDataItem,
+      search: string,
+      highlightedDisplay: React.ReactNode,
+      index: number,
+      focus: boolean,
+    ): React.ReactNode => {
+      if (!memberData) return;
+      return (
+        <EachMention focus={focus}>
+          <img
+            src={gravatar.url(memberData[index].email, {
+              s: "20px",
+              d: "retro",
+            })}
+            alt={memberData[index].nickname}
+          />
+          <span>{highlightedDisplay}</span>
+        </EachMention>
+      );
+    },
+    [memberData],
+  );
   return (
     <ChatArea>
       <Form onSubmit={onSubmitForm}>
@@ -38,9 +82,15 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
           onChange={onChangeChat}
           onKeyDown={onKeyDownChat}
           placeholder={placeholder}
-          ref={textareaRef}
+          inputRef={textareaRef}
+          allowSuggestionsAboveCursor
         >
-          <textarea />
+          <Mention
+            appendSpaceOnAdd
+            trigger="@"
+            data={memberData?.map((v: IUser) => ({ id: v.id, display: v.nickname })) || []}
+            renderSuggestion={renderSuggestion}
+          />
         </MentionsTextarea>
         <Toolbox>
           <SendButton

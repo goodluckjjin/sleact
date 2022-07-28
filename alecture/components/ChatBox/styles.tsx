@@ -16,7 +16,8 @@ export const Form = styled.form`
   border: 1px solid rgb(29, 28, 29);
 `;
 
-export const MentionsTextarea = styled.textarea`
+// 기존 태그에 styled 추가하기
+export const MentionsTextarea = styled(MentionsInput)`
   font-family: Slack-Lato, appleLogo, sans-serif;
   font-size: 15px;
   padding: 8px 9px;
@@ -60,7 +61,8 @@ export const SendButton = styled.button`
   right: 5px;
   top: 5px;
 `;
-
+// a`${()=> ``
+// a`${()=> `${()=> ``}`}`
 export const EachMention = styled.button<{ focus: boolean }>`
   padding: 4px 20px;
   background: transparent;
