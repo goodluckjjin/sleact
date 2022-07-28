@@ -65,12 +65,21 @@ const Workspace: FC = () => {
     userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
     fetcher,
   );
-  const [socket, disconnect] = useSocket();
-  // useEffect(() => {
-  //   socket.on("message");
-  //   socket.emit();
-  //   disconnect();
-  // }, []);
+  const [socket, disconnect] = useSocket(workspace);
+
+  useEffect(() => {
+    if (channelData && userData && socket) {
+      console.log("socket", socket);
+      socket.emit("login", { id: userData.id, channels: channelData.map((v) => v.id) });
+    }
+  }, [socket, userData, channelData]);
+
+  // workspace가 바뀔때 소켓 끊어주기
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [workspace, disconnect]);
 
   const onLogout = useCallback(() => {
     axios
