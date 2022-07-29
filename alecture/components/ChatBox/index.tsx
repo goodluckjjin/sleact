@@ -43,6 +43,7 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
       console.log(e);
       if (e.key === "Enter") {
         if (!e.shiftKey) {
+          e.preventDefault();
           onSubmitForm(e);
         }
       }
