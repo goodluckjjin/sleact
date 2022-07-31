@@ -11,7 +11,7 @@ interface Props {
 }
 
 // Channel, DM 함께 사용됨
-const ChatList: VFC<Props> = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty, isReachingEnd }, ref) => {
+const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty, isReachingEnd }, ref) => {
   // 리버스 인피니티 스크롤 기능
   const onScroll = useCallback((values: any) => {
     if (values.scrollTop === 0 && !isReachingEnd) {
