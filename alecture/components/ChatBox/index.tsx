@@ -23,7 +23,7 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
     error,
     mutate,
   } = useSWR("http://localhost:3095/api/users", fetcher, {
-    dedupingInterval: 1000, // 호출시간
+    dedupingInterval: 2000, // 호출시간
   });
   const { data: memberData } = useSWR(
     userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
@@ -40,7 +40,6 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
 
   const onKeyDownChat = useCallback(
     (e: any) => {
-      console.log(e);
       if (e.key === "Enter") {
         if (!e.shiftKey) {
           e.preventDefault();
@@ -81,7 +80,7 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
           id="edito-chat"
           value={chat}
           onChange={onChangeChat}
-          onKeyDown={onKeyDownChat}
+          onKeyPress={onKeyDownChat}
           placeholder={placeholder}
           inputRef={textareaRef}
           allowSuggestionsAboveCursor
