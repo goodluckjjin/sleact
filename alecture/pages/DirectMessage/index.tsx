@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Workspace from "@layouts/Workspace";
 import { Container, Header, DragOver } from "@pages/DirectMessage/styles";
 import gravatar from "gravatar";
@@ -32,11 +32,29 @@ const DirectMessage = () => {
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1].length < 20) || false;
 
   const scrollRef = useRef<Scrollbars>(null);
-
   const onSubmitForm = useCallback(
     (e: any) => {
       e.preventDefault();
-      if (chat?.trim()) {
+      if (chat?.trim() && chatData) {
+        // Optimistic UI : 사용성 향상
+        // 가짜데이터를 먼저 넣어줌으로써 화면상 렌더가 빠르게 이루어지는 것처럼 속임
+        const savedChat = chat;
+        mutateChat((prevChatData) => {
+          prevChatData?.[0].unshift({
+            id: (chatData[0][0]?.id || 0) + 1,
+            content: savedChat,
+            SenderId: myData.id,
+            Sender: myData,
+            ReceiverId: userData.id,
+            Receiver: userData,
+            createdAt: new Date(),
+          });
+          return prevChatData;
+          console.log("prevChatData", prevChatData);
+        }, false).then(() => {
+          setChat("");
+          scrollRef.current?.scrollToBottom();
+        });
         axios
           .post(
             `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
@@ -50,16 +68,50 @@ const DirectMessage = () => {
           .then(() => {
             mutateChat();
             setChat("");
+            scrollRef.current?.scrollToBottom();
           })
           .catch(console.error);
       }
     },
-    [chat],
+
+    [chat, chatData, myData, userData, workspace, id],
   );
+  // const onSubmitForm = useCallback(
+  //   (e: any) => {
+  //     e.preventDefault();
+  //     if (chat?.trim()) {
+  //       axios
+  //         .post(
+  //           `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
+  //           {
+  //             content: chat,
+  //           },
+  //           {
+  //             withCredentials: true,
+  //           },
+  //         )
+  //         .then(() => {
+  //           mutateChat();
+  //           setChat("");
+  //           scrollRef.current?.scrollToBottom();
+  //         })
+  //         .catch(console.error);
+  //     }
+  //   },
+
+  //   [chat],
+  // );
   // chatData?.reverse()
   // concat(...chatData).reverse()
   // [...chatData].reverse()
   const chatSections = makeSection(chatData ? [...chatData].flat().reverse() : []);
+
+  // 로딩 시 스크롤바 제일 아래로
+  useEffect(() => {
+    if (chatData?.length === 1) {
+      scrollRef.current?.scrollToBottom();
+    }
+  }, [chatData]);
 
   if (!userData || !myData) return null;
   return (

@@ -25,7 +25,6 @@ const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty
         {/* Object.entries(chatSections) => 객체를 배열로 바꿈 */}
         {chatSections &&
           Object.entries?.(chatSections)?.map(([date, chats]: [string, IDM[]]) => {
-            console.log("in map", date, chats);
             return (
               <Section>
                 <StickyHeader>

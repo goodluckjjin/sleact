@@ -35,7 +35,7 @@ const DMList: FC = () => {
 
   useEffect(() => {
     socket?.on("onlineList", (data: number[]) => {
-      console.log("DMList onlineList", data);
+      // console.log("DMList onlineList", data);
       setOnlineList(data);
     });
     // socket?.on('dm', onMessage);
