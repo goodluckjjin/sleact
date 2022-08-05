@@ -31,7 +31,7 @@ const DirectMessage = () => {
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1].length < 20) || false;
 
-  const scrollRef = useRef<Scrollbars>(null);
+  const scrollbarRef = useRef<Scrollbars>(null);
   const onSubmitForm = useCallback(
     (e: any) => {
       e.preventDefault();
@@ -50,10 +50,9 @@ const DirectMessage = () => {
             createdAt: new Date(),
           });
           return prevChatData;
-          console.log("prevChatData", prevChatData);
         }, false).then(() => {
           setChat("");
-          scrollRef.current?.scrollToBottom();
+          scrollbarRef.current?.scrollToBottom();
         });
         axios
           .post(
@@ -67,8 +66,6 @@ const DirectMessage = () => {
           )
           .then(() => {
             mutateChat();
-            setChat("");
-            scrollRef.current?.scrollToBottom();
           })
           .catch(console.error);
       }
@@ -76,42 +73,24 @@ const DirectMessage = () => {
 
     [chat, chatData, myData, userData, workspace, id],
   );
-  // const onSubmitForm = useCallback(
-  //   (e: any) => {
-  //     e.preventDefault();
-  //     if (chat?.trim()) {
-  //       axios
-  //         .post(
-  //           `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
-  //           {
-  //             content: chat,
-  //           },
-  //           {
-  //             withCredentials: true,
-  //           },
-  //         )
-  //         .then(() => {
-  //           mutateChat();
-  //           setChat("");
-  //           scrollRef.current?.scrollToBottom();
-  //         })
-  //         .catch(console.error);
-  //     }
-  //   },
-
-  //   [chat],
-  // );
-  // chatData?.reverse()
-  // concat(...chatData).reverse()
-  // [...chatData].reverse()
-  const chatSections = makeSection(chatData ? [...chatData].flat().reverse() : []);
 
   // 로딩 시 스크롤바 제일 아래로
   useEffect(() => {
     if (chatData?.length === 1) {
-      scrollRef.current?.scrollToBottom();
+      setTimeout(() => {
+        console.log("0.1초 뒤", scrollbarRef.current);
+        scrollbarRef.current?.scrollToBottom();
+      }, 100);
     }
   }, [chatData]);
+
+  // chatData?.reverse()
+  // concat(...chatData).reverse()
+  // [...chatData].reverse()
+  const chatSections = makeSection(chatData ? [...chatData].flat().reverse() : []);
+  useEffect(() => {
+    console.log("scrollbarRef값이 바뀔때마다", scrollbarRef.current);
+  }, [scrollbarRef]);
 
   if (!userData || !myData) return null;
   return (
@@ -120,13 +99,7 @@ const DirectMessage = () => {
         <img src={gravatar.url(userData.email, { s: "24px", d: "retro" })} alt={userData.nickname} />
         <span>{userData.nickname}</span>
       </Header>
-      <ChatList
-        chatSections={chatSections}
-        ref={scrollRef}
-        setSize={setSize}
-        isEmpty={isEmpty}
-        isReachingEnd={isReachingEnd}
-      />
+      <ChatList chatSections={chatSections} ref={scrollbarRef} setSize={setSize} isReachingEnd={isReachingEnd} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
     </Container>
   );
