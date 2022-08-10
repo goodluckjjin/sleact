@@ -82,7 +82,7 @@ export const Button = styled.button`
 
 export const Error = styled.div`
   color: #e01e5a;
-  margin: 8px 0 16px;
+  margin: 0 0 20px;
   font-weight: bold;
 `;
 

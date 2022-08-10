@@ -17,11 +17,11 @@ const LogIn = () => {
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
   const [logInError, , setLogInError] = useInput(false);
-
+  console.log("logInError", logInError);
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
-      setLogInError(true);
+      setLogInError(false);
       axios
         .post(
           `http://localhost:3095/api/users/login`,
@@ -33,18 +33,15 @@ const LogIn = () => {
         )
         .then((response) => {
           // mutate();
-          mutate(response.data, false); //
-          console.log("login then", response);
+          mutate(response.data, false);
         })
         .catch((error) => {
-          setLogInError(error.response?.data?.staㄴtusCode === 401);
-          console.log("login error", error.response.data); // 이미 사용 중인 에러입니다
+          setLogInError(error.response?.status === 401);
         });
     },
     [email, password, mutate],
   );
   if (data) {
-    console.log("로그인 서어공");
     return <Navigate to={"/workspace/sleact/channel/일반"} />;
   }
 
@@ -63,7 +60,8 @@ const LogIn = () => {
           <div>
             <Input type="password" id="password" name="password" value={password} onChange={onChangePassword} />
           </div>
-          {logInError && <Error>이메일과 비밀번호 조합이 일치하지 않습니다.</Error>}
+          <Error>이메일과 비밀번호 조합이 일치하지 않습니다.</Error>
+          {/* {logInError && <Error>이메일과 비밀번호 조합이 일치하지 않습니다.</Error>} */}
         </Label>
 
         <Button type="submit">로그인</Button>
