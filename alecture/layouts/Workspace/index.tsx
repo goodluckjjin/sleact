@@ -17,6 +17,7 @@ import {
   WorkspaceName,
   WorkspaceModal,
   AddButton,
+  LogOutButton,
 } from "@layouts/Workspace/styles";
 import { Button, Input, Label } from "@pages/Signup/styles";
 import useInput from "@hooks/useInput";
@@ -164,18 +165,22 @@ const Workspace: FC = () => {
       <Header>
         <RightMenu>
           <span onClick={onClickUserProfile}>
-            <ProfileImg src={gravatar?.url(data.nickname, { s: "28px", d: "retro" })} alt={`${data.nickname}`} />
+            <ProfileImg src={gravatar?.url(data.email, { s: "28px", d: "retro" })} alt={`${data.nickname}`} />
             {showUserMenu && (
               <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onCloseUserProfile}>
                 <ProfileModal>
                   <img src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} />
+                  <div>
+                    <span id="profile-name">{data.nickname}</span>
+                    <span id="profile-active">Active</span>
+                  </div>
                 </ProfileModal>
+                <LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
               </Menu>
             )}
           </span>
         </RightMenu>
       </Header>
-      <button onClick={onLogout}>로그아웃</button>
       <WorkspaceWrapper>
         <Workspaces>
           {workspaces?.map((ws: IWorkspace) => {
