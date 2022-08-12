@@ -90,7 +90,7 @@ const Channel = () => {
   // 메시지 받기
   const onMessage = useCallback(
     (data: IChat) => {
-      if (data.Channel.name === channel && data.UserId !== myData.id) {
+      if ((data.Channel.name === channel && data.content.startsWith("upload\\")) || data.UserId !== myData.id) {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
