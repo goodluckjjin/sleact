@@ -9,10 +9,12 @@ import { Link, useParams } from "react-router-dom";
 interface Props {
   data: IDM | IChat;
 }
-
+const BACK_URL = process.env.NODE_ENV === "development" ? "http://localhost:3095" : "http://localhost:3095";
 const Chat: VFC<Props> = ({ data }) => {
   const { workspace } = useParams<{ workspace: string }>();
   const user = "Sender" in data ? data.Sender : data.User;
+  console.log("data in Chat", data);
+
   // @[hihi](1)
   // .은 모든 글자
   // .+는 모든 글자를 한 개 이상
@@ -30,21 +32,27 @@ const Chat: VFC<Props> = ({ data }) => {
   // useMemo는 hooks에서 캐싱하고 싶은 함수, 부모컴포넌트가 렌더되더라도 자식컴포넌트는 렌더될 필요 없을 때
   const result = useMemo(
     () =>
-      regexifyString({
-        input: data.content,
-        pattern: /@\[(.+?)]\((\d+?)\)|\n/g, // id나 줄바꿈 둘 다 찾았을 때
-        decorator(match, index) {
-          const arr = match.match(/@\[(.+?)]\((\d+?)\)/)!; // id만 찾았을 때
-          if (arr) {
-            return (
-              <Link key={match + index} to={`/workspace/${workspace}/dm/${arr[2]}`}>
-                @{arr[1]}
-              </Link>
-            );
-          }
-          return <br key={index} />; // 나머지(줄바꿈) 찾았을때
-        },
-      }),
+      // data.content.startsWith('upload\\?')
+
+      data.content.startsWith("uploads\\") || data.content.startsWith("uploads/") ? (
+        <img src={`${BACK_URL}/${data.content}`} style={{ maxHeight: 200 }} />
+      ) : (
+        regexifyString({
+          input: data.content,
+          pattern: /@\[(.+?)]\((\d+?)\)|\n/g, // id나 줄바꿈 둘 다 찾았을 때
+          decorator(match, index) {
+            const arr = match.match(/@\[(.+?)]\((\d+?)\)/)!; // id만 찾았을 때
+            if (arr) {
+              return (
+                <Link key={match + index} to={`/workspace/${workspace}/dm/${arr[2]}`}>
+                  @{arr[1]}
+                </Link>
+              );
+            }
+            return <br key={index} />; // 나머지(줄바꿈) 찾았을때
+          },
+        })
+      ),
     [data.content],
   );
   return (
