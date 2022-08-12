@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import Workspace from "@layouts/Workspace";
-import { Container, Header, DragOver } from "@pages/DirectMessage/styles";
+import { Container, Header } from "@pages/DirectMessage/styles";
 import gravatar from "gravatar";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import fetcher from "@utils/fetcher";
 import ChatList from "@components/ChatList";
@@ -13,7 +12,6 @@ import axios from "axios";
 import { IDM } from "@typings/db";
 import makeSection from "@utils/makeSection";
 import Scrollbars from "react-custom-scrollbars";
-import { Socket } from "socket.io-client";
 import useSocket from "@hooks/useSocket";
 
 const DirectMessage = () => {
@@ -34,12 +32,7 @@ const DirectMessage = () => {
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1].length < 20) || false;
 
   const scrollbarRef = useRef<Scrollbars>(null);
-  console.log(
-    "스크롤링 중,,",
-    scrollbarRef.current?.getClientHeight(),
-    scrollbarRef.current?.getScrollTop(),
-    scrollbarRef.current?.getScrollHeight(),
-  );
+
   const onSubmitForm = useCallback(
     (e: any) => {
       e.preventDefault();
@@ -83,23 +76,16 @@ const DirectMessage = () => {
   );
 
   const onMessage = useCallback((data: IDM) => {
-    console.log("data in onMessage", data);
-    console.log("myData in onMessage", myData);
     if (data.SenderId === Number(id) && myData.id !== Number(id)) {
       mutateChat((chatData) => {
-        console.log("1 chatData in mutateChat", chatData);
         chatData?.[0].unshift(data);
-        console.log("2 chatData in mutateChat", chatData);
         return chatData;
       }, false).then(() => {
-        console.log("성공!");
         if (scrollbarRef.current) {
-          console.log(scrollbarRef.current.getScrollHeight(), "와 ", scrollbarRef.current.getScrollTop());
           if (
             scrollbarRef.current.getScrollHeight() <
             scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
           ) {
-            console.log("scrollToBottom!", scrollbarRef.current?.getValues());
             setTimeout(() => {
               scrollbarRef.current?.scrollToBottom();
             }, 50);
@@ -129,9 +115,6 @@ const DirectMessage = () => {
   // concat(...chatData).reverse()
   // [...chatData].reverse()
   const chatSections = makeSection(chatData ? [...chatData].flat().reverse() : []);
-  useEffect(() => {
-    console.log("scrollbarRef값이 바뀔때마다", scrollbarRef.current);
-  }, [scrollbarRef]);
 
   if (!userData || !myData) return null;
   return (

@@ -1,12 +1,12 @@
 import React, { useCallback, useRef, VFC, forwardRef, MutableRefObject } from "react";
 import { ChatZone, Section, StickyHeader } from "@components/ChatList/styles";
-import { IDM } from "@typings/db";
+import { IChat, IDM } from "@typings/db";
 import Chat from "@components/Chat";
 import { Scrollbars } from "react-custom-scrollbars";
 
 interface Props {
-  chatSections?: { [key: string]: IDM[] } | undefined;
-  setSize: (f: (size: number) => number) => Promise<IDM[][] | undefined>;
+  chatSections?: { [key: string]: (IDM | IChat)[] } | undefined;
+  setSize: (f: (size: number) => number) => Promise<(IDM | IChat)[][] | undefined>;
   isReachingEnd: boolean;
   ref: React.RefObject<Scrollbars>;
 }
@@ -33,13 +33,13 @@ const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isReach
       <Scrollbars autoHide ref={scrollRef} onScrollFrame={onScroll}>
         {/* Object.entries(chatSections) => 객체를 배열로 바꿈 */}
         {chatSections &&
-          Object.entries?.(chatSections)?.map(([date, chats]: [string, IDM[]]) => {
+          Object.entries?.(chatSections)?.map(([date, chats]: [string, (IDM | IChat)[]]) => {
             return (
               <Section>
                 <StickyHeader>
                   <button>{date}</button>
                 </StickyHeader>
-                {chats.map((chat: IDM) => (
+                {chats.map((chat: IDM | IChat) => (
                   <Chat key={chat.id} data={chat} />
                 ))}
               </Section>
