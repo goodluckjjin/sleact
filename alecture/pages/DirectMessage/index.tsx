@@ -115,8 +115,6 @@ const DirectMessage = () => {
   }, [chatData]);
 
   const onDrop = useCallback((e: any) => {
-    console.log("onDrop e", e);
-
     // Prevent default behavior (Prevent file from being opened)
     e.preventDefault();
 
@@ -128,15 +126,12 @@ const DirectMessage = () => {
         // If dropped items aren't files, reject them
         if (e.dataTransfer.items[i].kind === "file") {
           const file = e.dataTransfer.items[i].getAsFile();
-          console.log(`e.dataTransfer.items true일때 … file[${i}].name = ${file.name}`);
-          console.log("formData", formData);
           formData.append("image", file);
         }
       }
     } else {
       // Use DataTransfer interface to access the file(s)
       for (let i = 0; i < e.dataTransfer.files.length; i++) {
-        console.log(`e.dataTransfer.items false일때 … file[${i}].name = ${e.dataTransfer.files[i].name}`);
         formData.append("image", e.dataTransfer.files[i]);
       }
     }
@@ -146,17 +141,17 @@ const DirectMessage = () => {
       })
       .then(() => {
         setDragOver(false);
-        console.log("작동된겨?");
+        console.log("성공");
         mutateChat();
       })
       .catch((e) => {
-        console.log("여기", e);
+        console.log("에러", e);
       });
   }, []);
 
   const onDragOver = useCallback((e: any) => {
     console.log("onDragOver e", e);
-    e.preventDefault();
+    // e.preventDefault();
     setDragOver(true);
   }, []);
 
@@ -164,7 +159,6 @@ const DirectMessage = () => {
   // concat(...chatData).reverse()
   // [...chatData].reverse()
   const chatSections = makeSection(chatData ? [...chatData].flat().reverse() : []);
-  console.log("chatSections", chatSections);
   if (!userData || !myData) return null;
   return (
     <Container onDrop={onDrop} onDragOver={onDragOver}>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Container, Header } from "@pages/Channel/styles";
+import { Container, Header, DragOver } from "@pages/Channel/styles";
 import gravatar from "gravatar";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
@@ -42,6 +42,7 @@ const Channel = () => {
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1].length < 20) || false;
   const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
   const scrollbarRef = useRef<Scrollbars>(null);
+  const [dragOver, setDragOver] = useState(false);
 
   // 메시지 보내기
   const onSubmitForm = useCallback(
@@ -90,7 +91,11 @@ const Channel = () => {
   // 메시지 받기
   const onMessage = useCallback(
     (data: IChat) => {
-      if ((data.Channel.name === channel && data.content.startsWith("upload\\")) || data.UserId !== myData.id) {
+      if (
+        (data.Channel.name === channel &&
+          (data.content.startsWith("upload\\") || data.content.startsWith("upload/"))) ||
+        data.UserId !== myData.id
+      ) {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
@@ -127,6 +132,47 @@ const Channel = () => {
     }
   }, [chatData]);
 
+  const onDrop = useCallback((e: any) => {
+    // Prevent default behavior (Prevent file from being opened)
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    if (e.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (let i = 0; i < e.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (e.dataTransfer.items[i].kind === "file") {
+          const file = e.dataTransfer.items[i].getAsFile();
+          formData.append("image", file);
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      for (let i = 0; i < e.dataTransfer.files.length; i++) {
+        formData.append("image", e.dataTransfer.files[i]);
+      }
+    }
+    axios
+      .post(`http://localhost:3095/api/workspaces/${workspace}/channels/${channel}/images`, formData, {
+        withCredentials: true,
+      })
+      .then(() => {
+        setDragOver(false);
+        console.log("성공");
+        mutateChat();
+      })
+      .catch((e) => {
+        console.log("에러", e);
+      });
+  }, []);
+
+  const onDragOver = useCallback((e: any) => {
+    console.log("onDragOver e", e);
+    // e.preventDefault();
+    setDragOver(true);
+  }, []);
+
   const onClickInviteChannel = useCallback(() => {
     setShowInviteChannelModal(true);
   }, []);
@@ -134,6 +180,7 @@ const Channel = () => {
   const onCloseModal = useCallback(() => {
     setShowInviteChannelModal(false);
   }, []);
+
   // chatData?.reverse()
   // concat(...chatData).reverse()
   // [...chatData].reverse()
@@ -141,7 +188,7 @@ const Channel = () => {
 
   if (!myData || !myData) return null;
   return (
-    <Container>
+    <Container onDrop={onDrop} onDragOver={onDragOver}>
       <Header>
         <span>#{channel}</span>
         <div className="header-right">
@@ -159,6 +206,7 @@ const Channel = () => {
       </Header>
       <ChatList chatSections={chatSections} ref={scrollbarRef} setSize={setSize} isReachingEnd={isReachingEnd} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
+      {dragOver && <DragOver>업로드!</DragOver>}
       <InviteChannelModal
         show={showInviteChannelModal}
         onCloseModal={onCloseModal}

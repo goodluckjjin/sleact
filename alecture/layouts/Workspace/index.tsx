@@ -172,7 +172,7 @@ const Workspace: FC = () => {
                   <img src={gravatar.url(data.nickname, { s: "36px", d: "retro" })} />
                   <div>
                     <span id="profile-name">{data.nickname}</span>
-                    <span id="profile-active">Active</span>
+                    <span id="profile-active">대화 가능</span>
                   </div>
                 </ProfileModal>
                 <LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
