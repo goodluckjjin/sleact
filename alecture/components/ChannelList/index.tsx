@@ -7,10 +7,11 @@ import React, { FC, useCallback, useState } from "react";
 import { useParams } from "react-router";
 import { NavLink } from "react-router-dom";
 import useSWR from "swr";
-
+import EachChannel from "@components/EachChannel";
 const ChannelList: FC = () => {
   const { workspace } = useParams<{ workspace?: string }>();
   // const [socket] = useSocket(workspace);
+  console.log("workspace ==== haha : ", workspace);
   const {
     data: userData,
     error,
@@ -50,15 +51,7 @@ const ChannelList: FC = () => {
         {!channelCollapse &&
           channelData?.map((channel: IChannel) => {
             const IsCurrentChannel = channel.name === currentChannelName;
-            return (
-              <NavLink
-                key={channel.name}
-                className={IsCurrentChannel ? "selected" : ""}
-                to={`/workspace/${workspace}/channel/${channel.name}`}
-              >
-                <span># {channel.name}</span>
-              </NavLink>
-            );
+            return <EachChannel channel={channel} IsCurrentChannel={IsCurrentChannel} />;
           })}
       </div>
     </>
