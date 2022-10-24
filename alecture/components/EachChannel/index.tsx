@@ -8,45 +8,9 @@ import useSWR from "swr";
 
 interface EachChannelProps {
   channel: IChannel;
-  IsCurrentChannel: boolean;
 }
 
-const EachChannel = ({ channel, IsCurrentChannel }: EachChannelProps) => {
-  // console.log("EachChannel 렌더링");
-  // const { workspace } = useParams<{ workspace?: string }>();
-  // const location = useLocation();
-  // const { data: userData } = useSWR<IUser>("/api/users", fetcher, {
-  //   dedupingInterval: 2000, // 2초ㄱ
-  // });
-  // const date = localStorage.getItem(`${workspace}-${channel.name}`) || 0;
-
-  // console.log("date는", date);
-  // const { data: count, mutate } = useSWR<number>(
-  //   userData
-  //     ? `http://locahhost:3095/api/workspaces/${workspace}/channels/${channel.name}/unreads?after=${date}`
-  //     : null,
-  //   fetcher,
-  // );
-  // console.log("count", count);
-
-  // useEffect(() => {
-  //   if (location.pathname === `http://locahhost:3095/api/workspaces/${workspace}/channels/${channel.name}`) {
-  //     // issue
-  //     mutate(0);
-  //   }
-  // }, [mutate, location.pathname, workspace, channel]);
-
-  // return (
-  //   <NavLink
-  //     key={channel.name}
-  //     className={IsCurrentChannel ? "selected" : ""}
-  //     to={`/workspace/${workspace}/channel/${channel.name}`}
-  //   >
-  //     <span># {channel.name}</span>
-  //     {/* <span className={count !== undefined && count > 0 ? "bold" : undefined}># {channel.name}</span>
-  //     {count !== undefined && count > 0 && <span className="count">{count}</span>} */}
-  //   </NavLink>
-  // );
+const EachChannel = ({ channel }: EachChannelProps) => {
   const { workspace } = useParams<{ workspace?: string }>();
   const location = useLocation();
   const { data: userData } = useSWR<IUser>("/api/users", fetcher, {
@@ -58,6 +22,12 @@ const EachChannel = ({ channel, IsCurrentChannel }: EachChannelProps) => {
     fetcher,
   );
 
+  // channel active css start
+  const pathname = window.location.pathname;
+  const seperatedPathName = pathname.split("/");
+  const currentChannelName = decodeURI(seperatedPathName[seperatedPathName.length - 1]);
+  // channel active css start
+
   useEffect(() => {
     if (location.pathname === `/workspace/${workspace}/channel/${channel.name}`) {
       mutate(0);
@@ -65,13 +35,15 @@ const EachChannel = ({ channel, IsCurrentChannel }: EachChannelProps) => {
   }, [mutate, location.pathname, workspace, channel]);
 
   return (
-    <NavLink key={channel.name} to={`/workspace/${workspace}/channel/${channel.name}`}>
+    <NavLink
+      key={channel.name}
+      to={`/workspace/${workspace}/channel/${channel.name}`}
+      className={() => (currentChannelName === channel.name ? "selected" : "")}
+    >
       <span className={count !== undefined && count > 0 ? "bold" : undefined}># {channel.name}</span>
       {count !== undefined && count > 0 && <span className="count">{count}</span>}
     </NavLink>
   );
 };
-
-// };
 
 export default EachChannel;

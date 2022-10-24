@@ -29,12 +29,6 @@ const ChannelList: FC = () => {
     setChannelCollapse((prev) => !prev);
   }, []);
 
-  // channel active css start
-  const pathname = window.location.pathname;
-  const seperatedPathName = pathname.split("/");
-  const currentChannelName = decodeURI(seperatedPathName[seperatedPathName.length - 1]);
-  // channel active css end
-
   return (
     <>
       <h2>
@@ -50,8 +44,8 @@ const ChannelList: FC = () => {
       <div>
         {!channelCollapse &&
           channelData?.map((channel: IChannel) => {
-            const IsCurrentChannel = channel.name === currentChannelName;
-            return <EachChannel channel={channel} IsCurrentChannel={IsCurrentChannel} />;
+            console.log("channel ", channel);
+            return <EachChannel channel={channel} />;
           })}
       </div>
     </>
