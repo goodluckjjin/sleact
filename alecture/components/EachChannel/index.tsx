@@ -25,8 +25,7 @@ const EachChannel = ({ channel }: EachChannelProps) => {
     fetcher,
   );
   // channel active css start
-  const pathname = window.location.pathname;
-  const seperatedPathName = pathname.split("/");
+  const seperatedPathName = location.pathname.split("/");
   const currentChannelName = decodeURI(seperatedPathName[seperatedPathName.length - 1]);
   // channel active css start
 

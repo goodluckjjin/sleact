@@ -129,10 +129,11 @@ const Channel = () => {
   }, [socket, onMessage]);
 
   useEffect(() => {
+    console.log("chatData", chatData, new Date().getTime().toString());
     localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
-  }, [workspace, channel]);
+  }, [workspace, channel, chatData]);
 
-  // 로딩 시 스크롤바 제일 아래로
+  // 로딩 시 스크롤바 제일 아래로>
   useEffect(() => {
     if (chatData?.length === 1) {
       setTimeout(() => {

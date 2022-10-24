@@ -67,6 +67,8 @@ const DirectMessage = () => {
             },
           )
           .then(() => {
+            localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+
             mutateChat();
           })
           // .catch(console.error);

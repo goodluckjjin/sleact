@@ -13,7 +13,6 @@ const BACK_URL = process.env.NODE_ENV === "development" ? "http://localhost:3095
 const Chat: VFC<Props> = ({ data }) => {
   const { workspace } = useParams<{ workspace: string }>();
   const user = "Sender" in data ? data.Sender : data.User;
-  console.log("data in Chat", data);
 
   // @[hihi](1)
   // .은 모든 글자
