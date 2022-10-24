@@ -52,6 +52,7 @@ const DirectMessage = () => {
           });
           return prevChatData;
         }, false).then(() => {
+          localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
           setChat("");
           scrollbarRef.current?.scrollToBottom();
         });
@@ -105,6 +106,10 @@ const DirectMessage = () => {
     };
   }, [socket, onMessage]);
 
+  useEffect(() => {
+    localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+  }, [workspace, id]);
+
   // 로딩 시 스크롤바 제일 아래로
   useEffect(() => {
     if (chatData?.length === 1) {
@@ -140,6 +145,8 @@ const DirectMessage = () => {
         withCredentials: true,
       })
       .then(() => {
+        localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+
         setDragOver(false);
         console.log("성공");
         mutateChat();
