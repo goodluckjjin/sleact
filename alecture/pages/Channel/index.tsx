@@ -79,7 +79,7 @@ const Channel = () => {
             },
           )
           .then(() => {
-            localStorage.setItme(`${workspace}-${channel}`, new Date().getTime().toString());
+            localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
             setChat("");
             if (scrollbarRef.current) {
               scrollbarRef.current.scrollToBottom();
@@ -129,7 +129,7 @@ const Channel = () => {
   }, [socket, onMessage]);
 
   useEffect(() => {
-    localStorage.setItme(`${workspace}-${channel}`, new Date().getTime().toString());
+    localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
   }, [workspace, channel]);
 
   // 로딩 시 스크롤바 제일 아래로
@@ -167,7 +167,7 @@ const Channel = () => {
         withCredentials: true,
       })
       .then(() => {
-        localStorage.setItme(`${workspace}-${channel}`, new Date().getTime().toString());
+        localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
 
         setDragOver(false);
         console.log("성공");
