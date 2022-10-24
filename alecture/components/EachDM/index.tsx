@@ -19,6 +19,9 @@ const EachDM = ({ member, isOnline }: EachDMProps) => {
   } = useSWR<IUser>("http://localhost:3095/api/users", fetcher, {
     dedupingInterval: 2000, // 2초
   });
+
+  // /workspaces/:workspace/dms/:id/unreads
+  console.log("isOnline", isOnline);
   return (
     <NavLink
       key={member.id}

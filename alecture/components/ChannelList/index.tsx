@@ -11,7 +11,6 @@ import EachChannel from "@components/EachChannel";
 const ChannelList: FC = () => {
   const { workspace } = useParams<{ workspace?: string }>();
   // const [socket] = useSocket(workspace);
-  console.log("workspace ==== haha : ", workspace);
   const {
     data: userData,
     error,
@@ -44,7 +43,6 @@ const ChannelList: FC = () => {
       <div>
         {!channelCollapse &&
           channelData?.map((channel: IChannel) => {
-            console.log("channel ", channel);
             return <EachChannel channel={channel} />;
           })}
       </div>

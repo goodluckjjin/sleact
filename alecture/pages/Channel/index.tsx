@@ -179,7 +179,6 @@ const Channel = () => {
   }, []);
 
   const onDragOver = useCallback((e: any) => {
-    console.log("onDragOver e", e);
     // e.preventDefault();
     setDragOver(true);
   }, []);

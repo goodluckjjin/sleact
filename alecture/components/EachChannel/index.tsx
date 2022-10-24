@@ -18,10 +18,12 @@ const EachChannel = ({ channel }: EachChannelProps) => {
   });
   const date = localStorage.getItem(`${workspace}-${channel.name}`) || 0;
   const { data: count, mutate } = useSWR<number>(
-    userData ? `/api/workspaces/${workspace}/channels/${channel.name}/unreads?after=${date}` : null,
+    // userData ? `/api/workspaces/${workspace}/channels/${channel.name}/unreads?after=${date}` : null,
+    userData
+      ? `http://localhost:3095/api/workspaces/${workspace}/channels/${channel?.name}/unreads?after=${date}`
+      : null,
     fetcher,
   );
-
   // channel active css start
   const pathname = window.location.pathname;
   const seperatedPathName = pathname.split("/");
