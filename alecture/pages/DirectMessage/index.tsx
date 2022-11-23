@@ -7,6 +7,7 @@ import fetcher from "@utils/fetcher";
 import ChatList from "@components/ChatList";
 import ChatBox from "@components/ChatBox";
 import { useParams } from "react-router";
+import { useLocation } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import axios from "axios";
 import { IDM } from "@typings/db";
@@ -27,6 +28,15 @@ const DirectMessage = () => {
     (index) => `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${index + 1}`,
     fetcher,
   );
+
+  // 현재 화면에서 메시지 수신 시 안 읽은 메시지 수 0으로 업데이트
+  const location = useLocation();
+  const date = localStorage.getItem(`${workspace}-${id}`) || 0;
+  const { data: count, mutate: mutateCount } = useSWR<number>(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/unreads?after=${date}` : null,
+    fetcher,
+  );
+
   const [socket] = useSocket(workspace);
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1].length < 20) || false;
@@ -82,6 +92,7 @@ const DirectMessage = () => {
   );
 
   const onMessage = useCallback((data: IDM) => {
+    console.log("onMessage실행");
     if (data.SenderId === Number(id) && myData.id !== Number(id)) {
       mutateChat((chatData) => {
         chatData?.[0].unshift(data);
@@ -97,14 +108,20 @@ const DirectMessage = () => {
             }, 50);
           }
         }
+        if (location.pathname === encodeURI(`/workspace/${workspace}/dm/${id}`)) {
+          console.log("working?   2");
+          mutateCount(0);
+        }
       });
     }
   }, []);
 
   useEffect(() => {
     socket?.on("dm", onMessage);
+    console.log("소켓 열림");
     return () => {
       socket?.off("dm", onMessage);
+      console.log("소켓 닫힘");
     };
   }, [socket, onMessage]);
 
@@ -120,6 +137,15 @@ const DirectMessage = () => {
       }, 100);
     }
   }, [chatData]);
+
+  useEffect(() => {
+    console.log("working?   1");
+
+    if (location.pathname === encodeURI(`/workspace/${workspace}/dm/${id}`)) {
+      console.log("working?   2");
+      mutateCount(0);
+    }
+  }, [mutateChat, mutateCount, location.pathname, workspace, id]);
 
   const onDrop = useCallback((e: any) => {
     // Prevent default behavior (Prevent file from being opened)
@@ -168,6 +194,7 @@ const DirectMessage = () => {
   // concat(...chatData).reverse()
   // [...chatData].reverse()
   const chatSections = makeSection(chatData ? [...chatData].flat().reverse() : []);
+  console.log("chatData", chatData?.[0]);
   if (!userData || !myData) return null;
   return (
     <Container onDrop={onDrop} onDragOver={onDragOver}>

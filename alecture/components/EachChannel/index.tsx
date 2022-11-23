@@ -13,7 +13,7 @@ interface EachChannelProps {
 const EachChannel = ({ channel }: EachChannelProps) => {
   const { workspace } = useParams<{ workspace?: string }>();
   const location = useLocation();
-  const { data: userData } = useSWR<IUser>("/api/users", fetcher, {
+  const { data: userData } = useSWR<IUser>("http://localhost:3095/api/users", fetcher, {
     dedupingInterval: 2000, // 2초
   });
   const date = localStorage.getItem(`${workspace}-${channel.name}`) || 0;
@@ -30,7 +30,7 @@ const EachChannel = ({ channel }: EachChannelProps) => {
   // channel active css start
 
   useEffect(() => {
-    if (location.pathname === `/workspace/${workspace}/channel/${channel.name}`) {
+    if (location.pathname === encodeURI(`/workspace/${workspace}/channel/${channel.name}`)) {
       mutate(0);
     }
   }, [mutate, location.pathname, workspace, channel]);
@@ -42,6 +42,7 @@ const EachChannel = ({ channel }: EachChannelProps) => {
       className={() => (currentChannelName === channel.name ? "selected" : "")}
     >
       <span className={count !== undefined && count > 0 ? "bold" : undefined}># {channel.name}</span>
+
       {count !== undefined && count > 0 && <span className="count">{count}</span>}
     </NavLink>
   );

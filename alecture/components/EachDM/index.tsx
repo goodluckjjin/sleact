@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
-import { IUserWithOnline, IUser } from "@typings/db";
+import { IUserWithOnline, IUser, IDM } from "@typings/db";
 import { useParams } from "react-router";
 import { NavLink, useLocation } from "react-router-dom";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
+
 import fetcher from "@utils/fetcher";
 
 interface EachDMProps {
@@ -22,16 +24,18 @@ const EachDM = ({ member, isOnline }: EachDMProps) => {
     userData ? `http://localhost:3095/api/workspaces/${workspace}/dms/${member.id}/unreads?after=${date}` : null,
     fetcher,
   );
+  const { data: chatData } = useSWRInfinite<IDM[]>(
+    (index) => `http://localhost:3095/api/workspaces/${workspace}/dms/${member.id}/chats?perPage=20&page=${index + 1}`,
+    fetcher,
+  );
 
-  console.log("count", count);
-
+  console.log("안 읽은 메시지 수", count);
   useEffect(() => {
-    if (location.pathname === `/workspace/${workspace}/dms/${member.id}`) {
+    if (location.pathname === encodeURI(`/workspace/${workspace}/dm/${member.id}`)) {
       mutate(0);
     }
   }, [mutate, location.pathname, workspace, member]);
 
-  console.log("isOnline", isOnline);
   return (
     <NavLink
       key={member.id}
